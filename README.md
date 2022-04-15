@@ -39,3 +39,32 @@ uname({sysname="Linux", nodename="ugglalaptop", ...}) = 0
 exit_group(0)                           = ?
 +++ exited with 0 +++
 ```
+
+## Compiling from the sources
+
+1. Clone the project
+
+```bash
+  git clone https://github.com/uggla/asm.git
+```
+
+2. Go to the project directory
+
+```bash
+  cd asm
+```
+
+3. Compile and run the program
+```bash
+cargo build
+./target/debug/asm
+```
+
+4. Compile hello.asm within asm directory (optional)<br/>
+Install make, gcc and nasm on your system using your
+system package manager. Then execute :
+```bash
+cd asm
+make
+./hello
+```
