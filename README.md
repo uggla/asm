@@ -40,7 +40,7 @@ exit_group(0)                           = ?
 +++ exited with 0 +++
 ```
 
-## Compiling from the sources
+## Build from the sources
 
 1. Clone the project
 
@@ -54,17 +54,31 @@ exit_group(0)                           = ?
   cd asm
 ```
 
-3. Compile and run the program
+3. Build and run the program
 ```bash
 cargo build
 ./target/debug/asm
 ```
 
-4. Compile hello.asm within asm directory (optional)<br/>
+4. Build hello.asm within asm directory (optional)<br/>
 Install make, gcc and nasm on your system using your
 system package manager. Then execute :
 ```bash
 cd asm
 make
 ./hello
+```
+
+## Program output example
+```bash
+ uggla   main  ~  workspace  rust  asm  ./target/debug/asm
+Hello from: 🦉 Uggla !!!
+UnameInfo {
+    sysname: "Linux",
+    nodename: "ugglalaptop",
+    release: "5.16.18-200.fc35.x86_64",
+    version: "#1 SMP PREEMPT Mon Mar 28 14:10:07 UTC 2022",
+    machine: "x86_64",
+    domainname: "(none)",
+}
 ```
