@@ -13,7 +13,13 @@ unsafe fn syscall_write(message: String) {
     );
 }
 
-// pub type c_char = i8;
+unsafe fn syscall_uname(utsname: &utsname) {
+    asm!(
+        "mov rax, 63",
+        "syscall",
+        in("rdi") utsname as *const _,
+    );
+}
 
 #[repr(C)]
 pub struct utsname {
@@ -25,34 +31,70 @@ pub struct utsname {
     pub domainname: [c_char; 65],
 }
 
-unsafe fn syscall_uname(utsname: &utsname) {
-    asm!(
-        "mov rax, 63",
-        "syscall",
-        in("rdi") utsname as *const _,
-    );
+impl utsname {
+    fn new() -> Self {
+        Self {
+            sysname: [0; 65],
+            nodename: [0; 65],
+            release: [0; 65],
+            version: [0; 65],
+            machine: [0; 65],
+            domainname: [0; 65],
+        }
+    }
 }
 
-fn main() {
+#[derive(Debug)]
+pub struct UnameInfo {
+    pub sysname: String,
+    pub nodename: String,
+    pub release: String,
+    pub version: String,
+    pub machine: String,
+    pub domainname: String,
+}
+
+// Inspired by uname crate.
+impl From<utsname> for UnameInfo {
+    fn from(utsname: utsname) -> Self {
+        Self {
+            sysname: { unsafe { CStr::from_ptr(utsname.sysname.as_ptr()) } }
+                .to_string_lossy()
+                .to_string(),
+            nodename: { unsafe { CStr::from_ptr(utsname.nodename.as_ptr()) } }
+                .to_string_lossy()
+                .to_string(),
+            release: { unsafe { CStr::from_ptr(utsname.release.as_ptr()) } }
+                .to_string_lossy()
+                .to_string(),
+            version: { unsafe { CStr::from_ptr(utsname.version.as_ptr()) } }
+                .to_string_lossy()
+                .to_string(),
+            machine: { unsafe { CStr::from_ptr(utsname.machine.as_ptr()) } }
+                .to_string_lossy()
+                .to_string(),
+            domainname: { unsafe { CStr::from_ptr(utsname.domainname.as_ptr()) } }
+                .to_string_lossy()
+                .to_string(),
+        }
+    }
+}
+
+#[derive(Debug)]
+enum Error {}
+
+fn main() -> Result<(), Error> {
     let message1 = String::from("Hello from: ");
     let message2 = String::from("🦉 Uggla !!!\n");
-    let mut utsname = utsname {
-        sysname: [0; 65],
-        nodename: [0; 65],
-        release: [0; 65],
-        version: [0; 65],
-        machine: [0; 65],
-        domainname: [0; 65],
-    };
+    let mut utsname = utsname::new();
+
     unsafe {
         syscall_write(message1);
         syscall_write(message2);
         syscall_uname(&utsname);
     }
-    let sysname = unsafe { CStr::from_ptr(utsname.sysname.as_ptr()) };
-    let nodename = unsafe { CStr::from_ptr(utsname.nodename.as_ptr()) };
-    let domainename = unsafe { CStr::from_ptr(utsname.domainname.as_ptr()) };
-    println!("{}", sysname.to_string_lossy());
-    println!("{}", nodename.to_string_lossy());
-    println!("{}", domainename.to_string_lossy());
+
+    let uname = UnameInfo::from(utsname);
+    println!("{:#?}", uname);
+    Ok(())
 }
