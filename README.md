@@ -1,7 +1,8 @@
 # asm
 
 This is a "hello world" project to play with Rust inline assembly.
-Inline assembly was introduced with Rust 1.59 release (2022-02-24)
+[Inline assembly](https://blog.rust-lang.org/2022/02/24/Rust-1.59.0.html#whats-in-1590-stable)
+was introduced with Rust 1.59 release (2022-02-24)
 and this is an attempt to learn more about it.
 
 Inspiration from this little project also comes from
