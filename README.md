@@ -11,7 +11,8 @@ show https://www.youtube.com/watch?v=F-Ow6-uH6Mc
 
 The goal of the project is to show:
 * How to call the `write` and `uname` syscall directly using assembly.
-* How to use raw pointers to share data.
+* How to use raw pointers and a bit of FFI (Foreign Fonction Interface)
+  to share data.
 * Usage of unsafe in such cases.
 * Implementation of the From trait to convert data from the C style
   structure to the Rust one. This part is shamefully more or less
