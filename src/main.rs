@@ -13,7 +13,7 @@ unsafe fn syscall_write(message: &str) {
     );
 }
 
-unsafe fn syscall_uname(utsname: &utsname) {
+unsafe fn syscall_uname(utsname: &Utsname) {
     asm!(
         "mov rax, 63",
         "syscall",
@@ -22,7 +22,7 @@ unsafe fn syscall_uname(utsname: &utsname) {
 }
 
 #[repr(C)]
-pub struct utsname {
+pub struct Utsname {
     pub sysname: [c_char; 65],
     pub nodename: [c_char; 65],
     pub release: [c_char; 65],
@@ -31,7 +31,7 @@ pub struct utsname {
     pub domainname: [c_char; 65],
 }
 
-impl utsname {
+impl Utsname {
     fn new() -> Self {
         Self {
             sysname: [0; 65],
@@ -55,8 +55,8 @@ pub struct UnameInfo {
 }
 
 // Inspired by uname crate.
-impl From<utsname> for UnameInfo {
-    fn from(utsname: utsname) -> Self {
+impl From<Utsname> for UnameInfo {
+    fn from(utsname: Utsname) -> Self {
         Self {
             sysname: { unsafe { CStr::from_ptr(utsname.sysname.as_ptr()) } }
                 .to_string_lossy()
@@ -86,7 +86,7 @@ enum Error {}
 fn main() -> Result<(), Error> {
     let message1 = String::from("Hello from: ");
     let message2 = String::from("🦉 Uggla !!!\n");
-    let mut utsname = utsname::new();
+    let mut utsname = Utsname::new();
 
     unsafe {
         syscall_write(&message1);
