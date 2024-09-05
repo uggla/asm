@@ -3,7 +3,7 @@ use libc::c_char;
 use std::arch::asm;
 use std::ffi::CStr;
 
-unsafe fn syscall_write(message: String) {
+unsafe fn syscall_write(message: &str) {
     asm!(
         "mov rax, 1",
         "mov rdi, 1",
@@ -89,8 +89,8 @@ fn main() -> Result<(), Error> {
     let mut utsname = utsname::new();
 
     unsafe {
-        syscall_write(message1);
-        syscall_write(message2);
+        syscall_write(&message1);
+        syscall_write(&message2);
         syscall_uname(&utsname);
     }
 
