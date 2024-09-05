@@ -3,21 +3,23 @@ AS=nasm #Assembly compiler
 ASFLAGS=-f elf64 -g #Assembly flags
 LD=ld #Linker
 LDFLAGS= #Linker flags
-SOURCES=$(wildcard *.asm) #Sources
-OBJECTS=$(SOURCES:.asm=.o) #Object files
-EXECUTABLE=hello #Program name
+
+EXECUTABLES=$(basename $(wildcard *.asm))
+
+# Object files
+OBJECTS=$(EXECUTABLES:=.o)
 
 #Check version
-all: $(SOURCES) $(EXECUTABLE)
+all: $(EXECUTABLES)
 
-#Create executable
-$(EXECUTABLE): $(OBJECTS)
-	$(LD) $(LDFLAGS) $(OBJECTS) -o $@
+# Generic rule to link object files into executables
+%: %.o
+	$(LD) $(LDFLAGS) $< -o $@
 
-#Compile assembly program
-$(OBJECTS): $(SOURCES)
-	$(AS) $(ASFLAGS) $(SOURCES)
+# Generic rule to assemble .asm files into .o files
+%.o: %.asm
+	$(AS) $(ASFLAGS) $< -o $@
 
 #Clean folder
 clean:
-	rm -rf *o $(EXECUTABLE)
+	rm -rf *o $(EXECUTABLES)

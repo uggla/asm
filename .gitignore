@@ -1,3 +1,4 @@
 /target
 *.o
 /asm/hello
+/asm/uname
