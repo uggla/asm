@@ -3,22 +3,32 @@ use libc::c_char;
 use std::arch::asm;
 use std::ffi::CStr;
 
-unsafe fn syscall_write(message: &str) {
+unsafe fn syscall_write(message: &str) -> i64 {
+    let mut result: i64;
+
     asm!(
         "mov rax, 1",
         "mov rdi, 1",
         "syscall",
         in("rsi") message.as_ptr(),
         in("rdx") message.len(),
+        lateout("rax") result
     );
+
+    result
 }
 
-unsafe fn syscall_uname(utsname: &Utsname) {
+unsafe fn syscall_uname(utsname: &Utsname) -> i64 {
+    let mut result: i64;
+
     asm!(
         "mov rax, 63",
         "syscall",
         in("rdi") utsname as *const _,
+        lateout("rax") result
     );
+
+    result
 }
 
 #[repr(C)]
@@ -81,7 +91,9 @@ impl From<Utsname> for UnameInfo {
 }
 
 #[derive(Debug)]
-enum Error {}
+enum Error {
+    SyscallError(i64),
+}
 
 fn main() -> Result<(), Error> {
     let message1 = String::from("Hello from: ");
@@ -89,9 +101,20 @@ fn main() -> Result<(), Error> {
     let mut utsname = Utsname::new();
 
     unsafe {
-        syscall_write(&message1);
-        syscall_write(&message2);
-        syscall_uname(&utsname);
+        let status = syscall_write(&message1);
+        if status < 0 {
+            return Err(Error::SyscallError(status));
+        }
+
+        let status = syscall_write(&message2);
+        if status < 0 {
+            return Err(Error::SyscallError(status));
+        }
+
+        let status = syscall_uname(&utsname);
+        if status < 0 {
+            return Err(Error::SyscallError(status));
+        }
     }
 
     let uname = UnameInfo::from(utsname);
