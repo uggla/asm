@@ -11,11 +11,12 @@ and the C From Scratch video series, mainly this
 show https://www.youtube.com/watch?v=F-Ow6-uH6Mc
 
 The goal of the project is to show:
-* How to call the `write` and `uname` syscall directly using assembly.
-* How to use raw pointers and a bit of FFI (Foreign Fonction Interface)
+
+- How to call the `write` and `uname` syscall directly using assembly.
+- How to use raw pointers and a bit of FFI (Foreign Fonction Interface)
   to share data.
-* Usage of unsafe in such cases.
-* Implementation of the From trait to convert data from the C style
+- Usage of unsafe in such cases.
+- Implementation of the From trait to convert data from the C style
   structure to the Rust one. This part is shamefully more or less
   copied from the uname crate.
 
@@ -28,6 +29,7 @@ another platform or CPU.
 
 Of course, tracing the program with `stace` shows
 the syscalls explicitly requested with inline assembly :
+
 ```
 execve("./target/debug/asm", ["./target/debug/asm"], 0x7fff86007bb0 /* 90 vars */) = 0
 ...
@@ -57,14 +59,16 @@ exit_group(0)                           = ?
 ```
 
 3. Build and run the program
+
 ```bash
 cargo build
 ./target/debug/asm
 ```
 
 4. Build hello.asm within asm directory (optional)<br/>
-Install make, gcc and nasm on your system using your
-system package manager. Then execute :
+   Install make, gcc and nasm on your system using your
+   system package manager. Then execute :
+
 ```bash
 cd asm
 make
@@ -72,14 +76,19 @@ make
 ```
 
 ## Program output example
+
 ```bash
- uggla   main  ~  workspace  rust  asm  ./target/debug/asm
+ 🦉 uggla   main  ~  workspace  rust  asm  cargo -V
+cargo 1.80.1 (376290515 2024-07-16)
+ 🦉 uggla   main  ~  workspace  rust  asm  cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/asm`
 Hello from: 🦉 Uggla !!!
 UnameInfo {
     sysname: "Linux",
     nodename: "ugglalaptop",
-    release: "5.16.18-200.fc35.x86_64",
-    version: "#1 SMP PREEMPT Mon Mar 28 14:10:07 UTC 2022",
+    release: "6.10.6-200.fc40.x86_64",
+    version: "#1 SMP PREEMPT_DYNAMIC Mon Aug 19 14:09:30 UTC 2024",
     machine: "x86_64",
     domainname: "(none)",
 }
