@@ -12,5 +12,5 @@ _start:
     syscall
 
 section .data
-    msg: db "Hello World!",0xa, 0xd
+    msg: db "Hello World!",0xA ; 0xA = \n
     mlen: equ $-msg
